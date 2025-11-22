@@ -1,0 +1,18 @@
+# pyproject.toml
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "myserver"
+version = "0.1.0"
+description = "Example server with auto-reload."
+authors = [
+  { name = "Your Name" }
+]
+readme = "README.md"
+requires-python = ">=3.9"
+
+# This is the important part: create a CLI tool named `myserver`
+[project.scripts]
+myserver = "myserver.cli:main"
