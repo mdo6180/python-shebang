@@ -9,7 +9,7 @@ def run():
     print("Starting app. Press Ctrl+C to stop.")
     try:
         while True:
-            print(f"[{datetime.now().isoformat(timespec='seconds')}] my anacostia app is running...")
+            print(f"[{datetime.now().isoformat(timespec='seconds')}] my anacostia app is running inside...")
             time.sleep(2)
     except KeyboardInterrupt:
         print("App received KeyboardInterrupt, shutting down.")
