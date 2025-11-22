@@ -1,15 +1,10 @@
 # anacostia/app.py
 
-import time
-from datetime import datetime
+from fastapi import FastAPI
 
-def run():
-    """Fake server loop."""
+app = FastAPI()
 
-    print("Starting app. Press Ctrl+C to stop.")
-    try:
-        while True:
-            print(f"[{datetime.now().isoformat(timespec='seconds')}] my anacostia app is running inside...")
-            time.sleep(2)
-    except KeyboardInterrupt:
-        print("App received KeyboardInterrupt, shutting down.")
+
+@app.get("/")
+async def read_root():
+    return {"message": "Hello from Anacostia FastAPI app!"}

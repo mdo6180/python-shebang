@@ -8,12 +8,13 @@ from pathlib import Path
 import argparse
 import importlib
 import inspect
+import uvicorn
 
 # Environment variable to distinguish parent vs child
 _CHILD_ENV_VAR = "ANACOSTIA_RELOADER_CHILD"
 
 
-def _run_app(app_path: str):
+def _run_app(app_path: str, host: str = "127.0.0.1", port: int = 8000):
     """
     Import and run the app specified by `app_path`.
 
@@ -45,7 +46,12 @@ def _run_app(app_path: str):
         )
 
     # Call the target (e.g., `run()`)
-    target()
+    uvicorn.run(
+        target,  # like uvicorn myserver.app:app
+        host=host,
+        port=port,
+        reload=False,        # we already have our own reloader
+    )
 
 
 def _iter_python_files(root: Path):
@@ -85,6 +91,12 @@ def _run_with_reloader(args):
     # Initial snapshot of file mtimes
     mtimes = _snapshot_mtimes(package_root)
 
+    child_args = []
+    if args.host:
+        child_args += ["--host", args.host]
+    if args.port:
+        child_args += ["--port", str(args.port)]
+
     while True:
         # Spawn child process
         env = os.environ.copy()
@@ -92,7 +104,7 @@ def _run_with_reloader(args):
 
         # Build the command for the child.
         # We pass --app through so the child knows which app to run.
-        cmd = [sys.executable, "-m", "anacostia", "--app", args.app]
+        cmd = [sys.executable, "-m", "anacostia", "--app", args.app, *child_args]
         if args.no_reload:
             # Shouldn't happen because we're only here if reload=True,
             # but we keep args around for completeness.
@@ -158,11 +170,13 @@ def main():
             "e.g. 'some_repo.main:run'. Default is 'anacostia.app:run'."
         ),
     )
+    parser.add_argument("--host", default="127.0.0.1", help="Host to bind.")
+    parser.add_argument("--port", type=int, default=8000, help="Port to bind.")
     args = parser.parse_args()
 
     # If we are in the child process, just run the app once.
     if os.environ.get(_CHILD_ENV_VAR) == "1":
-        _run_app(args.app)
+        _run_app(app_path=args.app, host=args.host, port=args.port)
         return
 
     # Parent process behavior
@@ -173,7 +187,7 @@ def main():
         sys.exit(exit_code)
     else:
         # No reload: just run the app in this process
-        _run_app(args.app)
+        _run_app(app_path=args.app, host=args.host, port=args.port)
 
 
 if __name__ == "__main__":
