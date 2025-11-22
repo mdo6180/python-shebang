@@ -11,7 +11,6 @@ import inspect
 
 # Environment variable to distinguish parent vs child
 _CHILD_ENV_VAR = "ANACOSTIA_RELOADER_CHILD"
-print(sys.path)
 
 
 def _run_app(app_path: str):
