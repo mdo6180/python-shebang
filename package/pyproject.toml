@@ -4,7 +4,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "myserver"
+name = "anacostia"
 version = "0.1.0"
 description = "Example server with auto-reload."
 authors = [
@@ -12,6 +12,6 @@ authors = [
 ]
 requires-python = ">=3.9"
 
-# This is the important part: create a CLI tool named `myserver`
+# This is the important part: create a CLI tool named `anacostia`
 [project.scripts]
-myserver = "myserver.cli:main"
+anacostia = "anacostia.cli:main"

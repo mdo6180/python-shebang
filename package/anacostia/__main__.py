@@ -1,4 +1,4 @@
-# myserver/__main__.py
+# anacostia/__main__.py
 
 from .cli import main
 

@@ -1,4 +1,4 @@
-# myserver/cli.py
+# anacostia/cli.py
 
 import os
 import sys
@@ -8,7 +8,7 @@ from pathlib import Path
 import argparse
 
 # Environment variable to distinguish parent vs child
-_CHILD_ENV_VAR = "MYSERVER_RELOADER_CHILD"
+_CHILD_ENV_VAR = "ANACOSTIA_RELOADER_CHILD"
 
 
 def _run_app():
@@ -43,7 +43,7 @@ def _run_with_reloader(args):
         # Spawn child process
         env = os.environ.copy()
         env[_CHILD_ENV_VAR] = "1"  # mark as child
-        cmd = [sys.executable, "-m", "myserver"]
+        cmd = [sys.executable, "-m", "anacostia"]
         if args.no_reload:
             # Shouldn't happen because we're only here if reload=True,
             # but we keep args around for completeness.
@@ -86,7 +86,7 @@ def _run_with_reloader(args):
 
 def main():
     """
-    Entrypoint for the `myserver` command and `python -m myserver`.
+    Entrypoint for the `anacostia` command and `python -m anacostia`.
     Handles:
       - parent (reloader)
       - child (actual app run)
