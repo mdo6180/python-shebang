@@ -34,20 +34,20 @@ def _run_app(app_path: str, host: str = "127.0.0.1", port: int = 8000):
         raise SystemExit(f"Could not import module '{module_name}' for --app: {exc}") from exc
 
     try:
-        target = getattr(module, attr_name)
+        fastapi_app = getattr(module, attr_name)
     except AttributeError as exc:
         raise SystemExit(
             f"Module '{module_name}' has no attribute '{attr_name}' (from --app '{app_path}')."
         ) from exc
 
-    if not callable(target):
+    if not callable(fastapi_app):
         raise SystemExit(
             f"Attribute '{attr_name}' in module '{module_name}' is not callable (from --app '{app_path}')."
         )
 
     # Call the target (e.g., `run()`)
     uvicorn.run(
-        target,  # like uvicorn myserver.app:app
+        fastapi_app,  # like uvicorn myserver.app:app
         host=host,
         port=port,
         reload=False,        # we already have our own reloader
